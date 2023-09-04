@@ -1,12 +1,18 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reeras_store/core/Router/router.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Edit/Presentaion/edit.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Show/Presentaion/show.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Store/Presentaion/store.dart';
 
 void main() {
-  runApp(MyApp());
+  BlocOverrides.runZoned(
+        () {
+      runApp( MyApp());
+    },
+    blocObserver: MyGlobalObserver(),
+  );
+
 }
 
 class MyApp extends StatelessWidget {
@@ -19,20 +25,42 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.Store, routes: [
+  GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.Store,
+      routes: [
     GoRoute(
         name: RouterNamed.Store,
         path: "/",
-        builder: (context, state) => Store_Page()),
+        builder: (context, state) => StorePage()),
     GoRoute(
-        name: RouterNamed.Show, path: "/show", builder: (context, state) {
-        //int? id  = state.extra as int; // 👈 casting is important
-       return Show_Page();
-
-    }),
-    GoRoute(
-        name: RouterNamed.Edit,
-        path: "/edit",
-        builder: (context, state) => Edit_Page()),
-  ]);
+        name: RouterNamed.Show,
+        path: "/show",
+        builder: (context, state) => ShowPage(id: state.extra as int?)),
+   ]
+ );
 }
+class MyGlobalObserver extends BlocObserver {
+  @override
+  void onEvent(Bloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+    debugPrint('${bloc.runtimeType} $event');
+  }
+
+  @override
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    debugPrint('${bloc.runtimeType} $change');
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    debugPrint('${bloc.runtimeType} $transition');
+  }
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    debugPrint('${bloc.runtimeType} $error $stackTrace');
+    super.onError(bloc, error, stackTrace);
+  }
+}
+

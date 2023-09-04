@@ -1,16 +1,17 @@
 import 'package:reeras_store/core/data_store/dio.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/Show/domain/repository/repository.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Store/domain/repository/end_point.dart';
 import 'package:reeras_store/modules/Prodects/model/product_model.dart';
 
-class Store_Repository {
-  static DioService? dioService =
-      DioService(BaseUrl: Store_End_Point.Base_Url);
+class StoreRepository {
+  static DioService dioService =
+      DioService(BaseUrl: Store_End_Point.baseUrl);
 
   static Future<List<Products>> GetStoreData({required int? PageName}) async {
     List<Products> Store_Data = [];
     final response = await dioService!.GetData(
-      url: Store_End_Point.url_get,
-      query: {Store_End_Point.query_get: PageName!},
+      url: Store_End_Point.urlGet,
+      query: {Store_End_Point.queryGet: PageName!},
     );
     if (response.statusCode == 200) {
       response.data["products"].forEach((e) {
@@ -27,14 +28,23 @@ class Store_Repository {
 
   }
 
-  static  EditStoreData({required int? id ,required Products? products}) async {
-    await dioService!.UpdataData(
-      url: "${Store_End_Point.url}$id",
-      body: products
-    ).then((value) {
-       print ("edit done");
-     });}
+  static postProdect ({Map<String, dynamic>? body}) async{
+    final response =   await dioService.PostData(
+        url: Store_End_Point.urlGet,
+        query: {"page" : 1 },
+        body: body!
+    );
+    print(response.data["msg"]);
+  }
 
+
+  static EditeDataRepository({required int? id ,required Products products}) async {
+    await dioService.UpdataData(
+        url: "${Store_End_Point.url}$id",
+        body: products.toJson()
+    ).then((value) {
+      print ("edit done");
+    });}
 
 
 

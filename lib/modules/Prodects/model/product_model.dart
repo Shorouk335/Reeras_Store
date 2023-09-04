@@ -91,19 +91,12 @@ class Products {
     data['barcode'] = this.barcode;
     data['name'] = this.name;
     data['description'] = this.description;
-    data['category_id'] = this.categoryId;
     data['cost'] = this.cost;
     data['price'] = this.price;
-    data['sale_price'] = this.salePrice;
-    data['onsale'] = this.onsale;
     data['active'] = this.active;
     data['has_attribute'] = this.hasAttribute;
-    if (this.variations != null) {
-      data['variations'] = this.variations!.map((v) => v.toJson()).toList();
-    }
     data['unit'] = this.unit;
     data['stock'] = this.stock;
-    data['image'] = this.image;
     return data;
   }
 }
