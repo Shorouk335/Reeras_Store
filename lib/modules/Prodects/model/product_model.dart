@@ -93,8 +93,8 @@ class Products {
     data['description'] = this.description;
     data['cost'] = this.cost;
     data['price'] = this.price;
-    data['active'] = this.active;
-    data['has_attribute'] = this.hasAttribute;
+    data['active'] = this.active==true?1:0;
+    data['has_attribute'] =0;
     data['unit'] = this.unit;
     data['stock'] = this.stock;
     return data;

@@ -64,3 +64,6 @@ class MyGlobalObserver extends BlocObserver {
   }
 }
 
+
+//cope paste
+// switch istead of true false

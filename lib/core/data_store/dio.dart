@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:reeras_store/modules/Prodects/model/product_model.dart';
 
 class DioService {
   Dio _dio = Dio();
@@ -47,11 +46,11 @@ class DioService {
 
   Future<Response> UpdataData({
     required String? url,
-    Map<String,dynamic>? body,
+    Map<String, dynamic>? body,
   }) async {
     return await _dio.put(
       url!,
-      data: {},
+      data: body,
     );
   }
 

@@ -1,5 +1,4 @@
 import 'package:reeras_store/core/data_store/dio.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Show/domain/repository/repository.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Store/domain/repository/end_point.dart';
 import 'package:reeras_store/modules/Prodects/model/product_model.dart';
 
@@ -34,7 +33,6 @@ class StoreRepository {
         query: {"page" : 1 },
         body: body!
     );
-    print(response.data["msg"]);
   }
 
 
