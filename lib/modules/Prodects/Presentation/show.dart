@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reeras_store/core/Router/router.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Show/cubit/cubit.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Show/cubit/states.dart';
+import 'package:reeras_store/modules/Prodects/cubit/showCubit/showCubit.dart';
+import 'package:reeras_store/modules/Prodects/cubit/showCubit/showStates.dart';
+
 
 // ignore: must_be_immutable
 class ShowPage extends StatelessWidget {

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reeras_store/core/Router/router.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/Presentaion/Widget/ProdectBox.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/states.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/store_cubit.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Widget/Prodect_Dialog.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/Widget/ProdectBox.dart';
+
+import 'package:reeras_store/modules/Prodects/Presentation/Prodect_Dialog.dart';
+import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storeStates.dart';
+import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storecubit.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});

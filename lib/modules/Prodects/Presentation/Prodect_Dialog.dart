@@ -4,10 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/states.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/store_cubit.dart';
+import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storeStates.dart';
+import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storecubit.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/TextForm_Widget.dart';
-import 'package:reeras_store/modules/Prodects/model/product_model.dart';
+import 'package:reeras_store/modules/Prodects/domain/model/model/product_model.dart';
 
 class ProdectDialog extends StatefulWidget {
   final Products? products;

@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reeras_store/core/Router/router.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Show/Presentaion/show.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Store/Presentaion/store.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/show.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/store.dart';
 
 void main() {
   // ignore: deprecated_member_use
