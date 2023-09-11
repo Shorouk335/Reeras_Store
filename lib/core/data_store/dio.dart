@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../../modules/Prodects/Presentation/Widget/showDialogWidget.dart';
+
 class DioService {
   Dio _dio = Dio();
   DioService({required String? baseUrl, BaseOptions? options}) {
@@ -23,11 +25,16 @@ class DioService {
       );
   }
 
-  Future<Response> getData({
+  Future<AppResponse> getData({
     required String? url,
     Map<String, dynamic>? query,
   }) async {
-    return await _dio.get(url!, queryParameters: query);
+    try {
+      final response = await _dio.get(url!, queryParameters: query);
+      return AppResponse(data: response.data, isError: false);
+    } on DioException catch (e) {
+      return AppResponse(data: e.response!.data, isError: true, exception: e);
+    }
   }
 
   Future<Response> showData({
@@ -36,12 +43,19 @@ class DioService {
     return await _dio.get(url!);
   }
 
-  Future<Response> postData({
+  Future<AppResponse> postData({
     required String? url,
     required dynamic body,
-    required Map<String, dynamic>? query,
+    bool formData = false,
+    Map<String, dynamic>? query,
   }) async {
-    return await _dio.post(url!, data: body, queryParameters: query);
+    try {
+      final response = await _dio.post(url!, queryParameters: query, data: formData ? FormData.fromMap(body) : body);
+      return AppResponse(data: response.data, isError: false);
+    } on DioException catch (e) {
+      // handelError(e);
+      return AppResponse(data: e.response!.data, isError: true, exception: e);
+    }
   }
 
   Future<Response> updataData({
@@ -60,4 +74,33 @@ class DioService {
     final response = await _dio.delete(url!);
     return response;
   }
+
+  static handelError(context, DioException exception) {
+    if (exception.type == DioExceptionType.badResponse) {
+      showDialogWidget(context: context, title: "Error", body: exception.response?.data["msg"]);
+
+      if (exception.response!.statusCode == 401) {}
+    }
+    if (exception.type == DioExceptionType.connectionTimeout) {
+      print("connectTimeout");
+    }
+    if (exception.type == DioExceptionType.sendTimeout) {
+      print("sendTimeout");
+    }
+    if (exception.type == DioExceptionType.receiveTimeout) {
+      print("receiveTimeout");
+    }
+    if (exception.type == DioExceptionType.unknown) {
+      print("cancel");
+    }
+  }
+}
+
+class AppResponse {
+  final dynamic data;
+
+  bool isError = false;
+  DioException? exception;
+
+  AppResponse({required this.data, required this.isError, this.exception});
 }

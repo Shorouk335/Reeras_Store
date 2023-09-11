@@ -5,17 +5,15 @@ import 'package:reeras_store/core/Router/router.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Show/Presentaion/show.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Store/Presentaion/store.dart';
 
+GlobalKey key = GlobalKey();
 void main() {
   // ignore: deprecated_member_use
   BlocOverrides.runZoned(
-        () {
-      runApp( MyApp());
+    () {
+      runApp(MyApp());
     },
     blocObserver: MyGlobalObserver(),
- 
-
   );
-
 }
 
 class MyApp extends StatelessWidget {
@@ -24,25 +22,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      key: key,
       debugShowCheckedModeBanner: false,
       title: 'Reeras Store',
       routerConfig: _goRoute,
     );
   }
 
-  final GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.store,
-      routes: [
-    GoRoute(
-        name: RouterNamed.store,
-        path: "/",
-        builder: (context, state) =>  const StorePage()),
-    GoRoute(
-        name: RouterNamed.show,
-        path: "/show",
-        builder: (context, state) => ShowPage(id: state.extra as int?)),
-   ]
- );
+  final GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.store, routes: [
+    GoRoute(name: RouterNamed.store, path: "/", builder: (context, state) => const StorePage()),
+    GoRoute(name: RouterNamed.show, path: "/show", builder: (context, state) => ShowPage(id: state.extra as int?)),
+  ]);
 }
+
 class MyGlobalObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
@@ -68,4 +60,3 @@ class MyGlobalObserver extends BlocObserver {
     super.onError(bloc, error, stackTrace);
   }
 }
-
