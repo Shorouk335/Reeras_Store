@@ -2,17 +2,17 @@ import 'package:dio/dio.dart';
 
 class DioService {
   Dio _dio = Dio();
-  DioService({required String? BaseUrl, BaseOptions? options}) {
+  DioService({required String? baseUrl, BaseOptions? options}) {
     _dio = Dio(
       options ??
           BaseOptions(
             headers: {"Accept": "application/json", "lang": "ar"},
-            baseUrl: BaseUrl!,
+            baseUrl: baseUrl!,
             contentType: "application/json",
             receiveDataWhenStatusError: true,
-            connectTimeout: Duration(milliseconds: 30000),
-            receiveTimeout: Duration(milliseconds: 30000),
-            sendTimeout: Duration(milliseconds: 30000),
+            connectTimeout: const Duration(milliseconds: 30000),
+            receiveTimeout: const Duration(milliseconds: 30000),
+            sendTimeout: const Duration(milliseconds: 30000),
           ),
       // to print the flow of dio
     )..interceptors.add(
@@ -23,28 +23,28 @@ class DioService {
       );
   }
 
-  Future<Response> GetData({
+  Future<Response> getData({
     required String? url,
     Map<String, dynamic>? query,
   }) async {
     return await _dio.get(url!, queryParameters: query);
   }
 
-  Future<Response> ShowData({
+  Future<Response> showData({
     required String? url,
   }) async {
     return await _dio.get(url!);
   }
 
-  Future<Response> PostData({
+  Future<Response> postData({
     required String? url,
-    required Map<String, dynamic>? body,
+    required dynamic body,
     required Map<String, dynamic>? query,
   }) async {
     return await _dio.post(url!, data: body, queryParameters: query);
   }
 
-  Future<Response> UpdataData({
+  Future<Response> updataData({
     required String? url,
     Map<String, dynamic>? body,
   }) async {
@@ -54,7 +54,7 @@ class DioService {
     );
   }
 
-  Future<Response> DeleteData({
+  Future<Response> deleteData({
     required String? url,
   }) async {
     final response = await _dio.delete(url!);

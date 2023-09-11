@@ -1,28 +1,28 @@
-class productsModel {
+class ProdectModel {
   bool? status;
   List<Products>? products;
   int? lastPage;
 
-  productsModel({this.status, this.products, this.lastPage});
+  ProdectModel({this.status, this.products, this.lastPage});
 
-  productsModel.fromJson(Map<String, dynamic> json) {
+  ProdectModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['products'] != null) {
       products = <Products>[];
       json['products'].forEach((v) {
-        products!.add(new Products.fromJson(v));
+        products!.add( Products.fromJson(v));
       });
     }
     lastPage = json['last_page'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    if (this.products != null) {
-      data['products'] = this.products!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    if (products != null) {
+      data['products'] = products!.map((v) => v.toJson()).toList();
     }
-    data['last_page'] = this.lastPage;
+    data['last_page'] = lastPage;
     return data;
   }
 }
@@ -42,7 +42,7 @@ class Products {
   List<dynamic>? variations;
   String? unit;
   int? stock;
-  String? image;
+  dynamic image;
 
   Products(
       {this.id,
@@ -86,17 +86,18 @@ class Products {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['barcode'] = this.barcode;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['cost'] = this.cost;
-    data['price'] = this.price;
-    data['active'] = this.active==true?1:0;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['barcode'] = barcode;
+    data['name'] = name;
+    data['description'] = description;
+    data['cost'] = cost;
+    data['price'] = price;
+    data['active'] = active==true?1:0;
     data['has_attribute'] =0;
-    data['unit'] = this.unit;
-    data['stock'] = this.stock;
+    data['unit'] = unit;
+    data['stock'] = stock;
+    //data['image'] = image ;
     return data;
   }
 }

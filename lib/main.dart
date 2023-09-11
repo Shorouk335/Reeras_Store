@@ -6,16 +6,21 @@ import 'package:reeras_store/modules/Prodects/Presentation/Show/Presentaion/show
 import 'package:reeras_store/modules/Prodects/Presentation/Store/Presentaion/store.dart';
 
 void main() {
+  // ignore: deprecated_member_use
   BlocOverrides.runZoned(
         () {
       runApp( MyApp());
     },
     blocObserver: MyGlobalObserver(),
+ 
+
   );
 
 }
 
 class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -25,14 +30,14 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.Store,
+  final GoRouter _goRoute = GoRouter(initialLocation: RouterNamed.store,
       routes: [
     GoRoute(
-        name: RouterNamed.Store,
+        name: RouterNamed.store,
         path: "/",
-        builder: (context, state) => StorePage()),
+        builder: (context, state) =>  const StorePage()),
     GoRoute(
-        name: RouterNamed.Show,
+        name: RouterNamed.show,
         path: "/show",
         builder: (context, state) => ShowPage(id: state.extra as int?)),
    ]
@@ -64,6 +69,3 @@ class MyGlobalObserver extends BlocObserver {
   }
 }
 
-
-//cope paste
-// switch istead of true false

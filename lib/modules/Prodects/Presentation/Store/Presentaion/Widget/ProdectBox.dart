@@ -1,11 +1,13 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/store_cubit.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/Prodect_Dialog.dart';
 import 'package:reeras_store/modules/Prodects/model/product_model.dart';
 
 class ProdectBox extends StatefulWidget {
  final Products? product;
+
+
 
   const ProdectBox({super.key, this.product});
  
@@ -18,9 +20,10 @@ class _ProdectBoxState extends State<ProdectBox> {
 
   @override
   Widget build(BuildContext context) {
-    StoreCubit store_cubit = StoreCubit.get(context);
+    StoreCubit storeCubit = StoreCubit.get(context);
+  
         return Padding(
-          padding: EdgeInsetsDirectional.all(7.0),
+          padding: const EdgeInsetsDirectional.all(7.0),
           child: Container(
             width: MediaQuery.of(context).size.width / 1.5,
             clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -34,9 +37,9 @@ class _ProdectBoxState extends State<ProdectBox> {
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 1.5,
-                      child: Image(
+                      child: const Image(
                         image: AssetImage(
                           "assets/images/pic.jpeg",
                         ),
@@ -53,30 +56,32 @@ class _ProdectBoxState extends State<ProdectBox> {
                                 barrierDismissible: true,
                                 builder: (context) {
                                   return AlertDialog(
-                                      title: Text(
+                                      title: const Text(
                                         'Edit product',
                                         style: TextStyle(color: Colors.red),
                                       ),
-                                      content: ProdectDialog(storeCubit: store_cubit ,products: widget.product,)
+                                      content: ProdectDialog(products: widget.product)
                                   );
                                 },
-                              ).then((value) => store_cubit.getStoreDataCubit(pageNamber: 1));
+                              ).then((value) => storeCubit.getStoreDataCubit(pageNamber: 1));
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.edit,
                               size: 25.0,
                               color: Colors.white,
                             )),
                         IconButton(
-                            onPressed: () {
-                              store_cubit.deleteStoreDataCubit(
+                            onPressed: () { 
+                              storeCubit.deleteStoreDataCubit(
                                   id: widget.product!.id);
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.delete,
                               size: 25.0,
                               color: Colors.red,
                             )),
+
+                
                       ],
                     ),
                   ],
@@ -92,32 +97,32 @@ class _ProdectBoxState extends State<ProdectBox> {
                       children: [
                         Text(
                           "${widget.product!.name}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 10.0,
                           ),
                         ),
                         Text(
                           "${widget.product!.description}",
-                          style: TextStyle(fontSize: 8.0, color: Colors.grey),
+                          style: const TextStyle(fontSize: 8.0, color: Colors.grey),
                         ),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star,
                               size: 20.0,
                               color: Colors.yellow,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             Text(
                               "${widget.product!.id}",
-                              style: TextStyle(fontSize: 15.0),
+                              style: const TextStyle(fontSize: 15.0),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               "${widget.product!.price} \$",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.red,
                               ),
                             ),

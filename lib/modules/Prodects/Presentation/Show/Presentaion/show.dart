@@ -5,30 +5,31 @@ import 'package:reeras_store/core/Router/router.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Show/cubit/cubit.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Show/cubit/states.dart';
 
+// ignore: must_be_immutable
 class ShowPage extends StatelessWidget {
   int? id;
-  ShowPage({required this.id});
+  ShowPage({super.key, required this.id});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          ShowDataCubit()..showStoreDataCubit(id: this.id),
+          ShowDataCubit()..showStoreDataCubit(id: id),
       child: BlocConsumer<ShowDataCubit, ShowDataState>(
         listener: (context, state) {},
         builder: (context, state) {
-          ShowDataCubit show_data_cubit = ShowDataCubit.get(context);
+          ShowDataCubit showDataCubit = ShowDataCubit.get(context);
           return Scaffold(
             appBar: AppBar(
-              title: Text("Show Page"),
+              title: const Text("Show Page"),
               backgroundColor: Colors.red,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  context.goNamed(RouterNamed.Store);
+                  context.goNamed(RouterNamed.store);
                 },
               ),
             ),
-            body: (show_data_cubit.showProdect != null)
+            body: (showDataCubit.showProdect != null)
                 ? Padding(
                     padding: EdgeInsetsDirectional.all(7.0),
                     child: Container(
@@ -44,9 +45,9 @@ class ShowPage extends StatelessWidget {
                           child: Stack(
                             alignment: Alignment.topCenter,
                             children: [
-                              Container(
+                              SizedBox(
                                 width: MediaQuery.of(context).size.width / 1.5,
-                                child: Image(
+                                child: const Image(
                                   image: AssetImage(
                                     "assets/images/pic.jpeg",
                                   ),
@@ -59,14 +60,14 @@ class ShowPage extends StatelessWidget {
                                 children: [
                                   IconButton(
                                       onPressed: () {},
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.edit,
                                         size: 25.0,
                                         color: Colors.white,
                                       )),
                                   IconButton(
                                       onPressed: () {},
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.delete,
                                         size: 25.0,
                                         color: Colors.red,
@@ -86,34 +87,34 @@ class ShowPage extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "${show_data_cubit.showProdect!.name}",
-                                    style: TextStyle(
+                                    "${showDataCubit.showProdect!.name}",
+                                    style: const TextStyle(
                                       fontSize: 10.0,
                                     ),
                                   ),
                                   Text(
-                                    "${show_data_cubit.showProdect!.description}",
-                                    style: TextStyle(
+                                    "${showDataCubit.showProdect!.description}",
+                                    style: const TextStyle(
                                         fontSize: 8.0, color: Colors.grey),
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.star,
                                         size: 20.0,
                                         color: Colors.yellow,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 5,
                                       ),
                                       Text(
-                                        "${show_data_cubit.showProdect!.id}",
-                                        style: TextStyle(fontSize: 15.0),
+                                        "${showDataCubit.showProdect!.id}",
+                                        style: const TextStyle(fontSize: 15.0),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       Text(
-                                        "${show_data_cubit.showProdect!.price} \$",
-                                        style: TextStyle(
+                                        "${showDataCubit.showProdect!.price} \$",
+                                        style: const TextStyle(
                                           color: Colors.red,
                                         ),
                                       ),
@@ -125,7 +126,7 @@ class ShowPage extends StatelessWidget {
                       ]),
                     ),
                   )
-                : Center(
+                : const Center(
                     child: CircularProgressIndicator(
                       color: Colors.red,
                     ),

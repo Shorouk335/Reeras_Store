@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
-Widget TextFormWidget({String? txt ,TextEditingController? controller}) {
+Widget textFormWidget({String? txt ,TextEditingController? controller}) {
   return TextFormField(
     controller: controller,
     validator: (value) {
@@ -14,32 +12,32 @@ Widget TextFormWidget({String? txt ,TextEditingController? controller}) {
       return null;
     },
 
-      inputFormatters: [
-        (txt == "Cost" || txt == "Price" || txt == "stock") ?
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')) :
-        FilteringTextInputFormatter.singleLineFormatter,
-      ],
+    inputFormatters: [
+      (txt == "Cost" || txt == "Price" || txt == "stock") ?
+      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')) :
+      FilteringTextInputFormatter.singleLineFormatter,
+    ],
 
     // عشان امنع الكوبي بيست
     //enableInteractiveSelection: false,
 
-   // keyboardType: (txt == "Cost" || txt == "Price"|| txt == "stock") ? TextInputType.number :TextInputType.text ,
+     keyboardType: (txt == "Cost" || txt == "Price"|| txt == "stock") ? TextInputType.number :TextInputType.text ,
     // لاخفاء واظهار النص
     cursorColor: Colors.red,
     decoration: InputDecoration(
 //استايل الكلام الخفي
       hintText: "$txt",
-      hintStyle: TextStyle(color: Colors.grey, fontSize: 15.0,),
+      hintStyle: const TextStyle(color: Colors.grey, fontSize: 15.0,),
 //حاله الفورم لو ضغط عليها
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
+        borderSide: const BorderSide(
           color: Colors.black26,
         ),
         borderRadius: BorderRadius.circular(20),
       ),
 // حاله الفورم لو مضغطش
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black26),
+        borderSide: const BorderSide(color: Colors.black26),
         borderRadius: BorderRadius.circular(20),
       ),
     ),

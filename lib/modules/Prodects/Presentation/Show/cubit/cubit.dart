@@ -13,10 +13,7 @@ class ShowDataCubit extends Cubit<ShowDataState>{
   Products? showProdect;
 
   showStoreDataCubit({required int? id}) async {
-    print("oooooooooo");
     showProdect =  Products.fromJson(await ShowRepository.showStoreData(id: id!) as Map<String,dynamic>);
-    print("pppppp");
-    print("ccccccccccc${showProdect!.id}");
     emit(GetShowState());
 
   }
