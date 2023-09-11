@@ -15,12 +15,12 @@ class StoreCubit extends Cubit<StoreState> {
 
   getStoreDataCubit({required int? pageNamber}) async {
     emit(LoadingStoreDataState());
-    try {
-      storeDataList = [];
-      storeDataList = await StoreRepository.getStoreData(pageName: pageNamber!);
+    final data = await StoreRepository.getStoreData(pageName: pageNamber!);
+    if (data is! DioException) {
+      storeDataList = data;
       emit(SuccessfulGetStoreDataState());
-    } catch (e) {
-      emit(ErrorGetStoreDataState());
+    } else {
+      emit(ErrorGetStoreDataState(error: data));
     }
   }
 
@@ -35,29 +35,17 @@ class StoreCubit extends Cubit<StoreState> {
     await getStoreDataCubit(pageNamber: 1);
   }
 
-  postProdectCubit(
-      {required dynamic data,
-      required int? pageNumber,
-      required BuildContext context}) async {
+  postProdectCubit({required dynamic data, required int? pageNumber, required BuildContext context}) async {
     emit(LoadingPostStoreDataState());
-    try {
-      Response response = await StoreRepository.postProdect(
-          body: data, pageNamber: pageNumber, context: context);
+    final response = await StoreRepository.postProdect(body: data, pageNamber: pageNumber, context: context);
+    if (response is DioException) {
+      emit(ErrorPostStoreDataState(error: response));
+      return;
+    } else {
       emit(SuccessfulPostProdectState());
-      showDialogWidget(
-          context: context, title: "message", body: response.data["msg"]);
+      showDialogWidget(context: context, title: "message", body: response.data["msg"]);
       await getStoreDataCubit(pageNamber: 1);
       Navigator.pop(context);
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.badResponse) {
-        if (e.response!.statusCode == 403) {
-          showDialogWidget(
-              context: context,
-              title: "Try Again",
-              body: e.response!.data["msg"]);
-        }
-      }
-      emit(ErrorPostStoreDataState());
     }
   }
 

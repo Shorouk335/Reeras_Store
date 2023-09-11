@@ -9,6 +9,8 @@ import 'package:reeras_store/modules/Prodects/Presentation/Store/cubit/store_cub
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/TextForm_Widget.dart';
 import 'package:reeras_store/modules/Prodects/model/product_model.dart';
 
+import '../../../../core/data_store/dio.dart';
+
 class ProdectDialog extends StatefulWidget {
   final Products? products;
   const ProdectDialog({super.key, required this.products});
@@ -29,7 +31,7 @@ class _ProdectDialogState extends State<ProdectDialog> {
   bool? switch1 = false;
   bool? switch2 = false;
   XFile? pickedFile;
-    File? file  ;
+  File? file;
   FormData? imageData;
 
   @override
@@ -53,7 +55,11 @@ class _ProdectDialogState extends State<ProdectDialog> {
     return BlocProvider(
       create: (BuildContext context) => StoreCubit(),
       child: BlocConsumer<StoreCubit, StoreState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ErrorPostStoreDataState) {
+            DioService.handelError(context, state.error!);
+          }
+        },
         builder: (context, state) {
           StoreCubit storeCubit = StoreCubit.get(context);
           return Form(
@@ -98,8 +104,7 @@ class _ProdectDialogState extends State<ProdectDialog> {
                   const SizedBox(
                     height: 10,
                   ),
-                  textFormWidget(
-                      txt: "Discription", controller: discController),
+                  textFormWidget(txt: "Discription", controller: discController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -129,20 +134,14 @@ class _ProdectDialogState extends State<ProdectDialog> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("active"),
-                      switchIcon(value: switch1, type: "1")
-                    ],
+                    children: [const Text("active"), switchIcon(value: switch1, type: "1")],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("has_attribute"),
-                      switchIcon(value: switch2, type: "2")
-                    ],
+                    children: [const Text("has_attribute"), switchIcon(value: switch2, type: "2")],
                   ),
                   const SizedBox(
                     height: 20,
@@ -181,9 +180,7 @@ class _ProdectDialogState extends State<ProdectDialog> {
                               ),
                               child: TextButton(
                                 child: Text(
-                                  widget.products != null
-                                      ? 'Edit product'
-                                      : "Post Prodect",
+                                  widget.products != null ? 'Edit product' : "Post Prodect",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,
@@ -203,17 +200,17 @@ class _ProdectDialogState extends State<ProdectDialog> {
     );
   }
 
-  clickButton(StoreCubit storeCubit,  {int? pageNumber}) async {
+  clickButton(StoreCubit storeCubit, {int? pageNumber}) async {
     if (formKey.currentState!.validate()) {
-     // FormData formData = FormData.fromMap({
-     //   "name": nameController!.text,
-     //   "price": int.parse(priceController!.text),
-     //   "active": switch1,
-     //   "barcode": barcodeController!.text,
-     //   "cost": int.parse(costController!.text),
-     //   "hasAttribute": switch2,
-     //   "stock": int.parse(stockController!.text),
-     //   "unit": unitController!.text,
+      // FormData formData = FormData.fromMap({
+      //   "name": nameController!.text,
+      //   "price": int.parse(priceController!.text),
+      //   "active": switch1,
+      //   "barcode": barcodeController!.text,
+      //   "cost": int.parse(costController!.text),
+      //   "hasAttribute": switch2,
+      //   "stock": int.parse(stockController!.text),
+      //   "unit": unitController!.text,
       //  "description": discController!.text,
       //  "image": await MultipartFile.fromFile(file!.path,
       //      filename: "image.jpg"),
@@ -227,26 +224,21 @@ class _ProdectDialogState extends State<ProdectDialog> {
         cost: int.parse(costController!.text),
         hasAttribute: switch2,
         stock: int.parse(stockController!.text),
-        unit: unitController!.text, 
+        unit: unitController!.text,
         description: discController!.text,
-       // image: await MultipartFile.fromFile(file!.path,
-       //     filename: "image"),
+        // image: await MultipartFile.fromFile(file!.path,
+        //     filename: "image"),
       );
       //ediiiiiiiiiiit
       if (widget.products != null) {
-        await storeCubit
-            .editDataCubit(id: widget.products!.id!, products: prodect)
-            .then((value) => Navigator.of(context).pop());
+        await storeCubit.editDataCubit(id: widget.products!.id!, products: prodect).then((value) => Navigator.of(context).pop());
       } //pooooost
       else {
-        await storeCubit
-            .postProdectCubit(data: prodect.toJson() , pageNumber: pageNumber ,context: context)
-            .then((value){
-              if (storeCubit.state is! ErrorPostStoreDataState){
-                 Navigator.of(context).pop();
-              }
-
-            });
+        await storeCubit.postProdectCubit(data: prodect.toJson(), pageNumber: pageNumber, context: context).then((value) {
+          if (storeCubit.state is! ErrorPostStoreDataState) {
+            Navigator.of(context).pop();
+          }
+        });
       }
     }
   }
@@ -290,8 +282,8 @@ class _ProdectDialogState extends State<ProdectDialog> {
     pickedFile = await picked.pickImage(source: ImageSource.camera);
     // to refresh screen with new photoe insted of icon
     setState(() {});
-    // to create image as form data 
-     file = File(pickedFile!.path);
+    // to create image as form data
+    file = File(pickedFile!.path);
     print(" image ddone ");
   }
 }
