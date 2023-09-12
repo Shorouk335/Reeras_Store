@@ -97,7 +97,7 @@ class Products {
     data['has_attribute'] =0;
     data['unit'] = unit;
     data['stock'] = stock;
-    //data['image'] = image ;
+    data['image'] = image ;
     return data;
   }
 }

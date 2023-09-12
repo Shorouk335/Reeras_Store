@@ -1,8 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reeras_store/core/dataStore/dio.dart';
 import 'package:reeras_store/modules/Prodects/domain/endPoint/end_point.dart';
-import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
 import 'package:reeras_store/modules/Prodects/domain/model/model/product_model.dart';
 
 class StoreRepository {
@@ -33,9 +31,9 @@ class StoreRepository {
   }
 
   static dynamic postProdect(
-      {dynamic body, int? pageNamber, required BuildContext context}) async {
+      {dynamic body, int? pageNamber, required BuildContext context ,required bool Form}) async {
     final appResponse = await dioService.postData(
-        url: StoreEndPoint.urlGet, query: {"page": pageNamber}, body: body!);
+        url: StoreEndPoint.urlGet, query: {"page": pageNamber}, body: body! ,isForm: Form );
     if (appResponse.isError == false) {
       return appResponse.data["msg"];
     }

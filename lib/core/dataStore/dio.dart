@@ -54,10 +54,11 @@ class DioService {
     required String? url,
     required dynamic body,
     required Map<String, dynamic>? query,
+    bool isForm = false ,
   }) async {
     try {
       final response =
-          await _dio.post(url!, data: body, queryParameters: query);
+          await _dio.post(url!, data: (isForm) ? FormData.fromMap(body):body, queryParameters: query);
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
       return AppResponse(data: e.response!.data, isError: true, exception: e);
@@ -90,26 +91,33 @@ class DioService {
     }
   }
 
-  static HandelException(BuildContext context, DioException exception) {
+  static HandelException( DioException exception) {
     if (exception.type == DioExceptionType.badResponse) {
       if (exception.response!.statusCode == 403) {
-        showDialogWidget(
-            context: context,
-            title: "Error",
-            body: exception.response?.data["msg"]);
+         showSmartToAst(msg: exception.response!.data["msg"]);
       }
-    }
+    } 
+ //مشكلة عندس مش عارفف اجيب داتا من السيرفر
     if (exception.type == DioExceptionType.connectionTimeout) {
       print("connectTimeout");
+      showSmartToAst(msg: exception.response!.data["msg"]);
     }
+    // مش عارف ابعت داتا لسيرفر
     if (exception.type == DioExceptionType.sendTimeout) {
       print("sendTimeout");
+      showSmartToAst(msg: exception.response!.data["msg"]);
+
     }
+     //مشكلة في السيرفر
     if (exception.type == DioExceptionType.receiveTimeout) {
       print("receiveTimeout");
+      showSmartToAst(msg: exception.response!.data["msg"]);
+
     }
     if (exception.type == DioExceptionType.unknown) {
       print("cancel");
+      showSmartToAst(msg: exception.response!.data["msg"]);
+
     }
   }
 }

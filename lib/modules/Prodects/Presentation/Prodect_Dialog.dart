@@ -1,9 +1,10 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reeras_store/core/dataStore/dio.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storeStates.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storecubit.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/TextForm_Widget.dart';
@@ -29,7 +30,7 @@ class _ProdectDialogState extends State<ProdectDialog> {
   bool? switch1 = false;
   bool? switch2 = false;
   XFile? pickedFile;
-    File? file  ;
+  File? file;
   FormData? imageData;
 
   @override
@@ -53,7 +54,33 @@ class _ProdectDialogState extends State<ProdectDialog> {
     return BlocProvider(
       create: (BuildContext context) => StoreCubit(),
       child: BlocConsumer<StoreCubit, StoreState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is LoadingPostStoreDataState ||
+              state is LoadingEditStoreDataState) {
+            showLoader();
+          }
+          if (state is SuccessfulPostProdectState) {
+            dismissDialog();
+            showSmartToAst(msg: state.msg);
+            Navigator.of(context).pop();
+          }
+          if (state is SuccefulEditDataState) {
+            dismissDialog();
+            showSmartToAst(msg: state.msg);
+             Navigator.of(context).pop();
+          }
+
+          if (state is ErrorPostStoreDataState) {
+            dismissDialog();
+
+            DioService.HandelException(state.error);
+          }
+          if (state is ErrorEditStoreDataState) {
+            dismissDialog();
+
+            DioService.HandelException(state.error);
+          }
+        },
         builder: (context, state) {
           StoreCubit storeCubit = StoreCubit.get(context);
           return Form(
@@ -164,36 +191,28 @@ class _ProdectDialogState extends State<ProdectDialog> {
                     height: 20,
                   ),
                   Center(
-                      child: state is! InitialStoreDataState && state is! ErrorPostStoreDataState
-                          ? const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: CircularProgressIndicator(
-                                color: Colors.red,
-                                strokeWidth: 3,
-                              ),
-                            )
-                          : Container(
-                              height: 50,
-                              width: 250,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                color: Colors.red,
-                              ),
-                              child: TextButton(
-                                child: Text(
-                                  widget.products != null
-                                      ? 'Edit product'
-                                      : "Post Prodect",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  await clickButton(storeCubit, pageNumber: 1);
-                                },
-                              ),
-                            )),
+                      child: Container(
+                    height: 50,
+                    width: 250,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.red,
+                    ),
+                    child: TextButton(
+                      child: Text(
+                        widget.products != null
+                            ? 'Edit product'
+                            : "Post Prodect",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                      onPressed: () async {
+                        await clickButton(storeCubit, pageNumber: 1);
+                      },
+                    ),
+                  )),
                 ],
               ),
             ),
@@ -203,17 +222,17 @@ class _ProdectDialogState extends State<ProdectDialog> {
     );
   }
 
-  clickButton(StoreCubit storeCubit,  {int? pageNumber}) async {
+  clickButton(StoreCubit storeCubit, {int? pageNumber}) async {
     if (formKey.currentState!.validate()) {
-     // FormData formData = FormData.fromMap({
-     //   "name": nameController!.text,
-     //   "price": int.parse(priceController!.text),
-     //   "active": switch1,
-     //   "barcode": barcodeController!.text,
-     //   "cost": int.parse(costController!.text),
-     //   "hasAttribute": switch2,
-     //   "stock": int.parse(stockController!.text),
-     //   "unit": unitController!.text,
+      // FormData formData = FormData.fromMap({
+      //   "name": nameController!.text,
+      //   "price": int.parse(priceController!.text),
+      //   "active": switch1,
+      //   "barcode": barcodeController!.text,
+      //   "cost": int.parse(costController!.text),
+      //   "hasAttribute": switch2,
+      //   "stock": int.parse(stockController!.text),
+      //   "unit": unitController!.text,
       //  "description": discController!.text,
       //  "image": await MultipartFile.fromFile(file!.path,
       //      filename: "image.jpg"),
@@ -227,26 +246,25 @@ class _ProdectDialogState extends State<ProdectDialog> {
         cost: int.parse(costController!.text),
         hasAttribute: switch2,
         stock: int.parse(stockController!.text),
-        unit: unitController!.text, 
+        unit: unitController!.text,
         description: discController!.text,
-       // image: await MultipartFile.fromFile(file!.path,
-       //     filename: "image"),
+        image: await MultipartFile.fromFile(file!.path,
+            filename: "image"),
       );
       //ediiiiiiiiiiit
       if (widget.products != null) {
         await storeCubit
-            .editDataCubit(id: widget.products!.id!, products: prodect)
-            .then((value) => Navigator.of(context).pop());
+            .editDataCubit(id: widget.products!.id!, products: prodect);
+           
       } //pooooost
       else {
         await storeCubit
-            .postProdectCubit(data: prodect.toJson() , pageNumber: pageNumber ,context: context)
-            .then((value){
-              if (storeCubit.state is! ErrorPostStoreDataState){
-                 Navigator.of(context).pop();
-              }
-
-            });
+            .postProdectCubit(
+                data: prodect.toJson(),
+                pageNumber: pageNumber,
+                context: context ,
+                Form: true);
+            
       }
     }
   }
@@ -290,8 +308,8 @@ class _ProdectDialogState extends State<ProdectDialog> {
     pickedFile = await picked.pickImage(source: ImageSource.camera);
     // to refresh screen with new photoe insted of icon
     setState(() {});
-    // to create image as form data 
-     file = File(pickedFile!.path);
+    // to create image as form data
+    file = File(pickedFile!.path);
     print(" image ddone ");
   }
 }

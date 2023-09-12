@@ -5,7 +5,6 @@ import 'package:reeras_store/core/Router/router.dart';
 import 'package:reeras_store/modules/Prodects/cubit/showCubit/showCubit.dart';
 import 'package:reeras_store/modules/Prodects/cubit/showCubit/showStates.dart';
 
-
 // ignore: must_be_immutable
 class ShowPage extends StatelessWidget {
   int? id;
@@ -34,7 +33,7 @@ class ShowPage extends StatelessWidget {
                 ? Padding(
                     padding: EdgeInsetsDirectional.all(7.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width ,
+                      width: MediaQuery.of(context).size.width,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       decoration: BoxDecoration(
                         color: Colors.grey.withOpacity(0.1),

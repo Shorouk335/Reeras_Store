@@ -15,7 +15,6 @@ class StoreCubit extends Cubit<StoreState> {
   getStoreDataCubit({required int? pageNamber}) async {
     emit(LoadingStoreDataState());
     storeDataList = [];
-
     final data = await StoreRepository.getStoreData(pageName: pageNamber!);
     if (data is! DioException) {
       storeDataList = data;
@@ -40,21 +39,19 @@ class StoreCubit extends Cubit<StoreState> {
   postProdectCubit(
       {required dynamic data,
       required int? pageNumber,
-      required BuildContext context}) async {
+      required BuildContext context ,
+      required bool Form }) async {
     emit(LoadingPostStoreDataState());
 
     final dataa = await StoreRepository.postProdect(
-        body: data, pageNamber: pageNumber, context: context);
+        body: data, pageNamber: pageNumber, context: context ,Form: Form);
     if (dataa is! DioException) {
       emit(SuccessfulPostProdectState(msg: dataa));
       await getStoreDataCubit(pageNamber: 1);
     } else {
       emit(ErrorPostStoreDataState(error: dataa));
     }
-    // showDialogWidget(
-    //     context: context, title: "message", body: response.data["msg"]);
 
-    // Navigator.pop(context);
   }
 
   editDataCubit({required int? id, required Products products}) async {

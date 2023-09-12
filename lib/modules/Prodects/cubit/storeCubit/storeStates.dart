@@ -15,8 +15,8 @@ class ErrorGetStoreDataState extends StoreState {
 
 class LoadingDeleteStoreDataState extends StoreState {}
 
-class SuccessfulDeleteStoreDataState extends StoreState { 
-  String? msg ;
+class SuccessfulDeleteStoreDataState extends StoreState {
+  String? msg;
   SuccessfulDeleteStoreDataState({required this.msg});
 }
 
@@ -28,7 +28,7 @@ class ErrorDeleteStoreDataState extends StoreState {
 class LoadingPostStoreDataState extends StoreState {}
 
 class SuccessfulPostProdectState extends StoreState {
-  String? msg ;
+  String? msg;
   SuccessfulPostProdectState({required this.msg});
 }
 
@@ -40,7 +40,7 @@ class ErrorPostStoreDataState extends StoreState {
 class LoadingEditStoreDataState extends StoreState {}
 
 class SuccefulEditDataState extends StoreState {
-  String? msg ;
+  String? msg;
   SuccefulEditDataState({required this.msg});
 }
 
