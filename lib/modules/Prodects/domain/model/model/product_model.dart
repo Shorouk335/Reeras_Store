@@ -43,6 +43,8 @@ class Products {
   String? unit;
   int? stock;
   dynamic image;
+  String? imageUrl;
+
 
   Products(
       {this.id,
@@ -82,7 +84,7 @@ class Products {
     //  }
     unit = json['unit'];
     stock = json['stock'];
-    image = json['image'];
+    imageUrl = json['image'];
   }
 
   Map<String, dynamic> toJson() {

@@ -44,7 +44,7 @@ class StoreCubit extends Cubit<StoreState> {
     emit(LoadingPostStoreDataState());
 
     final dataa = await StoreRepository.postProdect(
-        body: data, pageNamber: pageNumber, context: context ,Form: Form);
+        body: data, pageNamber: pageNumber, context: context ,Form: Form,);
     if (dataa is! DioException) {
       emit(SuccessfulPostProdectState(msg: dataa));
       await getStoreDataCubit(pageNamber: 1);

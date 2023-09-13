@@ -34,11 +34,13 @@ class _ProdectBoxState extends State<ProdectBox> {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.5,
-                  child: const Image(
-                    image: AssetImage(
-                      "assets/images/pic.jpeg",
-                    ),
+                  child: Image(
+                    image: NetworkImage(widget.product?.imageUrl ?? ""),
                     fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) => Image(
+                      image:  AssetImage("assets/images/pic.jpeg"),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
                 Row(
@@ -69,7 +71,7 @@ class _ProdectBoxState extends State<ProdectBox> {
                     IconButton(
                         onPressed: () {
                           storeCubit.deleteStoreDataCubit(
-                              id: widget.product!.id);
+                              id: widget.product?.id ?? 0);
                         },
                         icon: const Icon(
                           Icons.delete,
@@ -90,13 +92,13 @@ class _ProdectBoxState extends State<ProdectBox> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${widget.product!.name}",
+                      "${widget.product?.name ?? "shosho"}",
                       style: const TextStyle(
                         fontSize: 10.0,
                       ),
                     ),
                     Text(
-                      "${widget.product!.description}",
+                      "${widget.product?.description ?? "hhhhhhhhh"}",
                       style: const TextStyle(fontSize: 8.0, color: Colors.grey),
                     ),
                     Row(
@@ -110,12 +112,12 @@ class _ProdectBoxState extends State<ProdectBox> {
                           width: 5,
                         ),
                         Text(
-                          "${widget.product!.id}",
+                          "${widget.product?.id ?? 0}",
                           style: const TextStyle(fontSize: 15.0),
                         ),
                         const Spacer(),
                         Text(
-                          "${widget.product!.price} \$",
+                          "${widget.product?.price ?? 25} \$",
                           style: const TextStyle(
                             color: Colors.red,
                           ),

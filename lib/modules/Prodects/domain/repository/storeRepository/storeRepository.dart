@@ -33,7 +33,7 @@ class StoreRepository {
   static dynamic postProdect(
       {dynamic body, int? pageNamber, required BuildContext context ,required bool Form}) async {
     final appResponse = await dioService.postData(
-        url: StoreEndPoint.urlGet, query: {"page": pageNamber}, body: body! ,isForm: Form );
+        url: StoreEndPoint.urlGet, query: {"page": pageNamber}, body: body! ,isForm: Form,loading: true );
     if (appResponse.isError == false) {
       return appResponse.data["msg"];
     }
@@ -43,7 +43,7 @@ class StoreRepository {
   static editeDataRepository(
       {required int? id, required Products products}) async {
     final appResponse = await dioService.updataData(
-        url: "${StoreEndPoint.url}$id", body: products.toJson());
+        url: "${StoreEndPoint.url}$id", body: products.toJson() ,loading: true);
     if (appResponse.isError == false) {
       return appResponse.data["msg"];
     }

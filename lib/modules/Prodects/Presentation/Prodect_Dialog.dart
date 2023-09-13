@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reeras_store/core/dataStore/dio.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storeStates.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storecubit.dart';
@@ -26,26 +25,27 @@ class _ProdectDialogState extends State<ProdectDialog> {
   TextEditingController? barcodeController = TextEditingController();
   TextEditingController? unitController = TextEditingController();
   TextEditingController? stockController = TextEditingController();
+  String? image;
   final formKey = GlobalKey<FormState>();
   bool? switch1 = false;
   bool? switch2 = false;
   XFile? pickedFile;
   File? file;
-  FormData? imageData;
 
   @override
   void initState() {
     super.initState();
     if (widget.products != null) {
-      nameController!.text = widget.products!.name!;
-      discController!.text = widget.products!.description!;
-      costController!.text = widget.products!.cost!.toString();
-      priceController!.text = widget.products!.price!.toString();
-      barcodeController!.text = widget.products!.barcode!;
-      switch1 = widget.products!.active!;
-      switch2 = widget.products!.hasAttribute!;
-      unitController!.text = widget.products!.unit!;
-      stockController!.text = widget.products!.stock!.toString();
+      nameController!.text = widget.products?.name ?? "name";
+      discController!.text = widget.products?.description ?? "dis";
+      costController!.text = widget.products?.cost.toString() ?? "25";
+      priceController!.text = widget.products?.price.toString() ?? "25";
+      barcodeController!.text = widget.products?.barcode ?? "255";
+      switch1 = widget.products?.active ?? true;
+      switch2 = widget.products?.hasAttribute ?? true;
+      unitController!.text = widget.products?.unit ?? "unit";
+      stockController!.text = widget.products?.stock.toString() ?? "25";
+      image = widget.products?.imageUrl ?? "";
     }
   }
 
@@ -55,30 +55,13 @@ class _ProdectDialogState extends State<ProdectDialog> {
       create: (BuildContext context) => StoreCubit(),
       child: BlocConsumer<StoreCubit, StoreState>(
         listener: (context, state) {
-          if (state is LoadingPostStoreDataState ||
-              state is LoadingEditStoreDataState) {
-            showLoader();
-          }
           if (state is SuccessfulPostProdectState) {
-            dismissDialog();
             showSmartToAst(msg: state.msg);
             Navigator.of(context).pop();
           }
           if (state is SuccefulEditDataState) {
-            dismissDialog();
             showSmartToAst(msg: state.msg);
-             Navigator.of(context).pop();
-          }
-
-          if (state is ErrorPostStoreDataState) {
-            dismissDialog();
-
-            DioService.HandelException(state.error);
-          }
-          if (state is ErrorEditStoreDataState) {
-            dismissDialog();
-
-            DioService.HandelException(state.error);
+            Navigator.of(context).pop();
           }
         },
         builder: (context, state) {
@@ -93,24 +76,45 @@ class _ProdectDialogState extends State<ProdectDialog> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Center(
-                      child: (pickedFile != null)
-                          ?
-                          // عشان اعرض صوره من فيل
-                          Image.file(
-                              File(pickedFile!.path),
-                              height: 150,
-                              width: 250,
-                            )
-                          : InkWell(
+                      //edit
+                      child: (widget.products != null && pickedFile == null)
+                          ? InkWell(
                               onTap: () async {
                                 await pickedImage();
                               },
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                color: Colors.red,
-                                size: 50.0,
+                              child: Image(
+                                image: NetworkImage(image ?? ""),
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image(
+                                  image: AssetImage("assets/images/pic.jpeg"),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            ),
+                            )
+                          //edit imag or post
+                          : (pickedFile != null)
+                              ? // عشان اعرض صوره من فيل
+                              InkWell(
+                                  onTap: () async {
+                                    await pickedImage();
+                                  },
+                                  child: Image.file(
+                                    File(pickedFile!.path),
+                                    height: 150,
+                                    width: 250,
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () async {
+                                    await pickedImage();
+                                  },
+                                  child: const Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Colors.red,
+                                    size: 50.0,
+                                  ),
+                                ),
                     ),
                   ),
                   const Text("Prodect Name"),
@@ -224,20 +228,6 @@ class _ProdectDialogState extends State<ProdectDialog> {
 
   clickButton(StoreCubit storeCubit, {int? pageNumber}) async {
     if (formKey.currentState!.validate()) {
-      // FormData formData = FormData.fromMap({
-      //   "name": nameController!.text,
-      //   "price": int.parse(priceController!.text),
-      //   "active": switch1,
-      //   "barcode": barcodeController!.text,
-      //   "cost": int.parse(costController!.text),
-      //   "hasAttribute": switch2,
-      //   "stock": int.parse(stockController!.text),
-      //   "unit": unitController!.text,
-      //  "description": discController!.text,
-      //  "image": await MultipartFile.fromFile(file!.path,
-      //      filename: "image.jpg"),
-      //});
-      //  imageData = formData;
       Products prodect = Products(
         name: nameController!.text,
         price: int.parse(priceController!.text),
@@ -248,23 +238,21 @@ class _ProdectDialogState extends State<ProdectDialog> {
         stock: int.parse(stockController!.text),
         unit: unitController!.text,
         description: discController!.text,
-        image: await MultipartFile.fromFile(file!.path,
-            filename: "image"),
+        image: (file != null)
+            ? await MultipartFile.fromFile(file!.path, filename: "image")
+            : null,
       );
       //ediiiiiiiiiiit
       if (widget.products != null) {
-        await storeCubit
-            .editDataCubit(id: widget.products!.id!, products: prodect);
-           
+        await storeCubit.editDataCubit(
+            id: widget.products!.id!, products: prodect);
       } //pooooost
       else {
-        await storeCubit
-            .postProdectCubit(
-                data: prodect.toJson(),
-                pageNumber: pageNumber,
-                context: context ,
-                Form: true);
-            
+        await storeCubit.postProdectCubit(
+            data: prodect.toJson(),
+            pageNumber: pageNumber,
+            context: context,
+            Form: true);
       }
     }
   }
@@ -287,25 +275,9 @@ class _ProdectDialogState extends State<ProdectDialog> {
     );
   }
 
-  // to check of permision
-  //checkPermission()  {
-  // ignore: unused_local_variable
-  //  Map<Permission, PermissionStatus> states = [
-  //    Permission.camera,
-  //    Permission.storage
-  //  ].request() as Map<Permission, PermissionStatus>;
-  //  print("Asked for Permission ");
-  //  if (states[Permission.camera] != PermissionStatus.granted ||
-  //      states[Permission.storage] != PermissionStatus.granted) {
-  //    // to handell error
-  //    return;
-  //  }
-  //   pickedImage();
-  //}
-
   pickedImage() async {
     var picked = ImagePicker();
-    pickedFile = await picked.pickImage(source: ImageSource.camera);
+    pickedFile = await picked.pickImage(source: ImageSource.gallery);
     // to refresh screen with new photoe insted of icon
     setState(() {});
     // to create image as form data

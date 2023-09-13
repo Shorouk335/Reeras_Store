@@ -35,6 +35,8 @@ class DioService {
       //مش هوديله exception
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
+      HandelException(e);
+
       return AppResponse(data: e.response!.data, isError: true, exception: e);
     }
   }
@@ -46,6 +48,8 @@ class DioService {
       final response = await _dio.get(url!);
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
+      HandelException(e);
+
       return AppResponse(data: e.response!.data, isError: true, exception: e);
     }
   }
@@ -54,13 +58,25 @@ class DioService {
     required String? url,
     required dynamic body,
     required Map<String, dynamic>? query,
-    bool isForm = false ,
+    bool isForm = false,
+    bool loading = false,
   }) async {
     try {
-      final response =
-          await _dio.post(url!, data: (isForm) ? FormData.fromMap(body):body, queryParameters: query);
+      if (loading) {
+        showLoader();
+      }
+      final response = await _dio.post(url!,
+          data: (isForm) ? FormData.fromMap(body) : body,
+          queryParameters: query);
+      if (loading) {
+        dismissDialog();
+      }
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
+      if (loading) {
+        dismissDialog();
+      }
+      HandelException(e);
       return AppResponse(data: e.response!.data, isError: true, exception: e);
     }
   }
@@ -68,14 +84,25 @@ class DioService {
   Future<AppResponse> updataData({
     required String? url,
     Map<String, dynamic>? body,
+    bool loading = false,
   }) async {
     try {
+      if (loading) {
+        showLoader();
+      }
       final response = await _dio.put(
         url!,
         data: body,
       );
+      if (loading) {
+        dismissDialog();
+      }
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
+      if (loading) {
+        dismissDialog();
+      }
+      HandelException(e);
       return AppResponse(data: e.response!.data, isError: true, exception: e);
     }
   }
@@ -87,40 +114,37 @@ class DioService {
       final response = await _dio.delete(url!);
       return AppResponse(data: response.data, isError: false);
     } on DioException catch (e) {
+      HandelException(e);
       return AppResponse(data: e.response!.data, isError: true, exception: e);
     }
   }
 
-  static HandelException( DioException exception) {
+  static HandelException(DioException exception) {
     if (exception.type == DioExceptionType.badResponse) {
       if (exception.response!.statusCode == 403) {
-         showSmartToAst(msg: exception.response!.data["msg"]);
+        showSmartToAst(msg: exception.response!.data["msg"]);
+      } else {
+        showSmartToAst(msg: exception.response!.data["msg"]);
       }
-    } 
- //مشكلة عندس مش عارفف اجيب داتا من السيرفر
+    }
+    //مشكلة عندس مش عارفف اجيب داتا من السيرفر
     if (exception.type == DioExceptionType.connectionTimeout) {
-      print("connectTimeout");
       showSmartToAst(msg: exception.response!.data["msg"]);
     }
     // مش عارف ابعت داتا لسيرفر
     if (exception.type == DioExceptionType.sendTimeout) {
-      print("sendTimeout");
       showSmartToAst(msg: exception.response!.data["msg"]);
-
     }
-     //مشكلة في السيرفر
+    //مشكلة في السيرفر
     if (exception.type == DioExceptionType.receiveTimeout) {
-      print("receiveTimeout");
       showSmartToAst(msg: exception.response!.data["msg"]);
-
     }
     if (exception.type == DioExceptionType.unknown) {
-      print("cancel");
-      showSmartToAst(msg: exception.response!.data["msg"]);
-
+      showSmartToAst(msg: exception.error.toString());
     }
   }
 }
+
 class AppResponse {
   final dynamic data;
   bool isError = false;
