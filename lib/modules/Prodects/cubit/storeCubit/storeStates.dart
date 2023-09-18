@@ -13,6 +13,15 @@ class ErrorGetStoreDataState extends StoreState {
   ErrorGetStoreDataState({required this.error});
 }
 
+class LoadingShowState extends StoreState {}
+
+class GetShowState extends StoreState {}
+
+class ErrorShowState extends StoreState {
+  DioException error;
+  ErrorShowState({required this.error});
+}
+
 class LoadingDeleteStoreDataState extends StoreState {}
 
 class SuccessfulDeleteStoreDataState extends StoreState {

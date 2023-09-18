@@ -3,6 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reeras_store/core/data/data.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/Widget/ButtonWidget.dart';
+import 'package:reeras_store/modules/Prodects/Presentation/Widget/Variation.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storeStates.dart';
 import 'package:reeras_store/modules/Prodects/cubit/storeCubit/storecubit.dart';
@@ -18,35 +21,39 @@ class ProdectDialog extends StatefulWidget {
 }
 
 class _ProdectDialogState extends State<ProdectDialog> {
-  TextEditingController? nameController = TextEditingController();
-  TextEditingController? discController = TextEditingController();
-  TextEditingController? priceController = TextEditingController();
-  TextEditingController? costController = TextEditingController();
-  TextEditingController? barcodeController = TextEditingController();
-  TextEditingController? unitController = TextEditingController();
-  TextEditingController? stockController = TextEditingController();
-  String? image;
   final formKey = GlobalKey<FormState>();
-  bool? switch1 = false;
-  bool? switch2 = false;
+  String? image;
   XFile? pickedFile;
   File? file;
-
+VariablesProduct variablesProduct= VariablesProduct();
   @override
   void initState() {
     super.initState();
+    //edddddddit
     if (widget.products != null) {
-      nameController!.text = widget.products?.name ?? "name";
-      discController!.text = widget.products?.description ?? "dis";
-      costController!.text = widget.products?.cost.toString() ?? "25";
-      priceController!.text = widget.products?.price.toString() ?? "25";
-      barcodeController!.text = widget.products?.barcode ?? "255";
-      switch1 = widget.products?.active ?? true;
-      switch2 = widget.products?.hasAttribute ?? true;
-      unitController!.text = widget.products?.unit ?? "unit";
-      stockController!.text = widget.products?.stock.toString() ?? "25";
+      variablesProduct.nameController.text = widget.products?.name ?? "name";
+      variablesProduct.discController.text = widget.products?.description ?? "dis";
+      variablesProduct.costController.text = widget.products?.cost.toString() ?? "25";
+      variablesProduct.priceController.text = widget.products?.price.toString() ?? "25";
+      variablesProduct.barcodeController.text = widget.products?.barcode ?? "255";
+      variablesProduct.switch1 = widget.products?.active ?? true;
+      variablesProduct.switch2 = widget.products?.hasAttribute ?? true;
+      variablesProduct.unitController.text = widget.products?.unit ?? "unit";
+      variablesProduct.stockController.text = widget.products?.stock.toString() ?? "25";
       image = widget.products?.imageUrl ?? "";
+      if (widget.products!.variations!.isNotEmpty) {
+        variablesProduct.variationsCount = widget.products!.variations!.length;
+        widget.products!.variations!.forEach((element) {
+          variablesProduct.variationsData.add(element);
+        });
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    variablesProduct.dispose();
   }
 
   @override
@@ -71,153 +78,202 @@ class _ProdectDialogState extends State<ProdectDialog> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height / 1.4,
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Center(
-                      //edit
-                      child: (widget.products != null && pickedFile == null)
-                          ? InkWell(
-                              onTap: () async {
-                                await pickedImage();
-                              },
-                              child: Image(
-                                image: NetworkImage(image ?? ""),
-                                fit: BoxFit.fill,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Image(
-                                  image: AssetImage("assets/images/pic.jpeg"),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        //edit
+                        child: (widget.products != null && pickedFile == null)
+                            ? InkWell(
+                                onTap: () async {
+                                  await pickedImage();
+                                },
+                                child: Image(
+                                  image: NetworkImage(image ?? ""),
                                   fit: BoxFit.fill,
-                                ),
-                              ),
-                            )
-                          //edit imag or post
-                          : (pickedFile != null)
-                              ? // عشان اعرض صوره من فيل
-                              InkWell(
-                                  onTap: () async {
-                                    await pickedImage();
-                                  },
-                                  child: Image.file(
-                                    File(pickedFile!.path),
-                                    height: 150,
-                                    width: 250,
-                                  ),
-                                )
-                              : InkWell(
-                                  onTap: () async {
-                                    await pickedImage();
-                                  },
-                                  child: const Icon(
-                                    Icons.camera_alt_outlined,
-                                    color: Colors.red,
-                                    size: 50.0,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Image(
+                                    image: AssetImage("assets/images/pic.jpeg"),
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                    ),
-                  ),
-                  const Text("Prodect Name"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "name", controller: nameController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("Prodect Description"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(
-                      txt: "Discription", controller: discController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("Prodect Price"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "Price", controller: priceController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("Prodect Cost"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "Cost", controller: costController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("Prodect barcode"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "barcode", controller: barcodeController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("active"),
-                      switchIcon(value: switch1, type: "1")
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("has_attribute"),
-                      switchIcon(value: switch2, type: "2")
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("unit"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "unit", controller: unitController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("stock"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  textFormWidget(txt: "stock", controller: stockController),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                      child: Container(
-                    height: 50,
-                    width: 250,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.red,
-                    ),
-                    child: TextButton(
-                      child: Text(
-                        widget.products != null
-                            ? 'Edit product'
-                            : "Post Prodect",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                        ),
+                              )
+                            //edit imag or post
+                            : (pickedFile != null)
+                                ? // عشان اعرض صوره من فيل
+                                InkWell(
+                                    onTap: () async {
+                                      await pickedImage();
+                                    },
+                                    child: Image.file(
+                                      File(pickedFile!.path),
+                                      height: 150,
+                                      width: 250,
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () async {
+                                      await pickedImage();
+                                    },
+                                    child: const Icon(
+                                      Icons.camera_alt_outlined,
+                                      color: Colors.red,
+                                      size: 50.0,
+                                    ),
+                                  ),
                       ),
-                      onPressed: () async {
+                    ),
+                    const Text("Prodect Name"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(txt: "name", controller: variablesProduct.nameController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Prodect Description"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(
+                        txt: "Discription", controller: variablesProduct.discController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Prodect Price"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(txt: "Price", controller: variablesProduct.priceController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Prodect Cost"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(txt: "Cost", controller: variablesProduct.costController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Prodect barcode"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(
+                        txt: "barcode", controller: variablesProduct.barcodeController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("unit"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(txt: "unit", controller: variablesProduct.unitController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("stock"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    textFormWidget(txt: "stock", controller: variablesProduct.stockController),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("active"),
+                        switchIcon(value: variablesProduct.switch1, type: "1")
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("has_attribute"),
+                        switchIcon(value: variablesProduct.switch2, type: "2")
+                      ],
+                    ),
+                    (variablesProduct.switch2 == true)
+                        ? Column(
+                            children: [
+                              //الحجات الي اضافات قبل كدا
+                              ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                physics: NeverScrollableScrollPhysics(),                                  shrinkWrap: true,
+                                itemCount: variablesProduct.variationsCount,
+                                itemBuilder: (context, index) {
+                                  return Row(
+                                    children: [
+                                      SucessAddAtribute(
+                                        name: variablesProduct.variationsData[index].name,
+                                      ),
+                                      Spacer(),
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              variablesProduct.variationsCount--;
+                                              variablesProduct.variationsData.removeAt(index);
+                                            });
+                                          },
+                                          child: const Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 10.0),
+                                          ))
+                                    ],
+                                  );
+                                },
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              //زرار انه يضيف جديد
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                          'Add Attribute',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        content: addAtribute(context ,variablesProduct),
+                                      );
+                                    },
+                                  ).then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: ButtonWidget(buttontxt: "Add Attribute"),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    InkWell(
+                      onTap: () async {
                         await clickButton(storeCubit, pageNumber: 1);
                       },
+                      child: ButtonWidget(
+                          buttontxt: widget.products != null
+                              ? 'Edit product'
+                              : "Post Prodect"),
                     ),
-                  )),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -229,25 +285,27 @@ class _ProdectDialogState extends State<ProdectDialog> {
   clickButton(StoreCubit storeCubit, {int? pageNumber}) async {
     if (formKey.currentState!.validate()) {
       Products prodect = Products(
-        name: nameController!.text,
-        price: int.parse(priceController!.text),
-        active: switch1,
-        barcode: barcodeController!.text,
-        cost: int.parse(costController!.text),
-        hasAttribute: switch2,
-        stock: int.parse(stockController!.text),
-        unit: unitController!.text,
-        description: discController!.text,
-        image: (file != null)
+        name: variablesProduct.nameController.text,
+        price: int.parse(variablesProduct.priceController.text),
+        active: variablesProduct.switch1,
+        barcode: variablesProduct.barcodeController.text,
+        cost: int.parse(variablesProduct.costController.text),
+        hasAttribute: variablesProduct.switch2,
+        stock: int.parse(variablesProduct.stockController.text),
+        unit: variablesProduct.unitController.text,
+        description: variablesProduct.discController.text,
+        image: (pickedFile != null)
             ? await MultipartFile.fromFile(file!.path, filename: "image")
             : null,
+        variations: (variablesProduct.variationsData.isNotEmpty) ? variablesProduct.variationsData : null,
       );
       //ediiiiiiiiiiit
       if (widget.products != null) {
         await storeCubit.editDataCubit(
-            id: widget.products!.id!, products: prodect);
+            id: widget.products!.id!, products: prodect.toJson(), Form: true);
       } //pooooost
       else {
+        // ignore: use_build_context_synchronously
         await storeCubit.postProdectCubit(
             data: prodect.toJson(),
             pageNumber: pageNumber,
@@ -255,24 +313,6 @@ class _ProdectDialogState extends State<ProdectDialog> {
             Form: true);
       }
     }
-  }
-
-  Widget switchIcon({required bool? value, required String? type}) {
-    return Switch(
-      value: value!,
-      onChanged: (value) {
-        if (type == "1") {
-          setState(() {
-            switch1 = value;
-          });
-        } else {
-          setState(() {
-            switch2 = value;
-          });
-        }
-      },
-      activeColor: Colors.red,
-    );
   }
 
   pickedImage() async {
@@ -283,5 +323,23 @@ class _ProdectDialogState extends State<ProdectDialog> {
     // to create image as form data
     file = File(pickedFile!.path);
     print(" image ddone ");
+  }
+
+  Widget switchIcon({required bool? value, required String? type}) {
+    return Switch(
+      value: value!,
+      onChanged: (value) {
+        if (type == "1") {
+          setState(() {
+            variablesProduct.switch1 = value;
+          });
+        } else {
+          setState(() {
+            variablesProduct.switch2 = value;
+          });
+        }
+      },
+      activeColor: Colors.red,
+    );
   }
 }

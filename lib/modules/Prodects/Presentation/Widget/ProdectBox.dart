@@ -33,11 +33,12 @@ class _ProdectBoxState extends State<ProdectBox> {
               alignment: Alignment.topCenter,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.5,
+                  height:MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width ,
                   child: Image(
                     image: NetworkImage(widget.product?.imageUrl ?? ""),
                     fit: BoxFit.fill,
-                    errorBuilder: (context, error, stackTrace) => Image(
+                    errorBuilder: (context, error, stackTrace) => const Image(
                       image:  AssetImage("assets/images/pic.jpeg"),
                       fit: BoxFit.fill,
                     ),
@@ -66,7 +67,7 @@ class _ProdectBoxState extends State<ProdectBox> {
                         icon: const Icon(
                           Icons.edit,
                           size: 25.0,
-                          color: Colors.white,
+                          color: Colors.red,
                         )),
                     IconButton(
                         onPressed: () {

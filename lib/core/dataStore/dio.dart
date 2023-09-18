@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:reeras_store/modules/Prodects/Presentation/Widget/showDialogWidget.dart';
 
 class DioService {
@@ -85,6 +84,7 @@ class DioService {
     required String? url,
     Map<String, dynamic>? body,
     bool loading = false,
+    bool isForm = false,
   }) async {
     try {
       if (loading) {
@@ -92,7 +92,7 @@ class DioService {
       }
       final response = await _dio.put(
         url!,
-        data: body,
+        data: (isForm) ? FormData.fromMap(body!): body!,
       );
       if (loading) {
         dismissDialog();
@@ -129,18 +129,18 @@ class DioService {
     }
     //مشكلة عندس مش عارفف اجيب داتا من السيرفر
     if (exception.type == DioExceptionType.connectionTimeout) {
-      showSmartToAst(msg: exception.response!.data["msg"]);
+    //  showSmartToAst(msg: exception.response!.data["msg"]);
     }
     // مش عارف ابعت داتا لسيرفر
     if (exception.type == DioExceptionType.sendTimeout) {
-      showSmartToAst(msg: exception.response!.data["msg"]);
+    //  showSmartToAst(msg: exception.response!.data["msg"]);
     }
     //مشكلة في السيرفر
     if (exception.type == DioExceptionType.receiveTimeout) {
-      showSmartToAst(msg: exception.response!.data["msg"]);
+     // showSmartToAst(msg: exception.response!.data["msg"]);
     }
     if (exception.type == DioExceptionType.unknown) {
-      showSmartToAst(msg: exception.error.toString());
+     // showSmartToAst(msg: exception.error.toString());
     }
   }
 }

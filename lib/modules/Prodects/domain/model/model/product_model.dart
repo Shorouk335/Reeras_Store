@@ -10,7 +10,7 @@ class ProdectModel {
     if (json['products'] != null) {
       products = <Products>[];
       json['products'].forEach((v) {
-        products!.add( Products.fromJson(v));
+        products!.add(Products.fromJson(v));
       });
     }
     lastPage = json['last_page'];
@@ -39,12 +39,11 @@ class Products {
   bool? onsale;
   bool? active;
   bool? hasAttribute;
-  List<dynamic>? variations;
+  List<VariationsItem>? variations;
   String? unit;
   int? stock;
   dynamic image;
   String? imageUrl;
-
 
   Products(
       {this.id,
@@ -75,13 +74,13 @@ class Products {
     onsale = json['onsale'];
     active = json['active'];
     hasAttribute = json['has_attribute'];
-    variations = <dynamic>[];
-    // if (json['variations'] != null) {
-    //   variations = <dynamic>[];
-    // json['variations'].forEach((v) {
-    //   variations!.add( variations.fromJson(v));
-    //});
-    //  }
+    variations = <VariationsItem>[];
+    if (json['variations'] != null) {
+      variations = <VariationsItem>[];
+      json['variations'].forEach((v) {
+        variations!.add(VariationsItem.fromJson(v));
+      });
+    }
     unit = json['unit'];
     stock = json['stock'];
     imageUrl = json['image'];
@@ -95,11 +94,59 @@ class Products {
     data['description'] = description;
     data['cost'] = cost;
     data['price'] = price;
-    data['active'] = active==true?1:0;
-    data['has_attribute'] =0;
+    data['active'] = active == true ? 1 : 0;
+    data['has_attribute'] = hasAttribute == true ? 1 : 0;
     data['unit'] = unit;
     data['stock'] = stock;
-    data['image'] = image ;
+    data['image'] = image;
+    data['variations']=variations?.map((e) => e.toJson()).toList();
     return data;
+  }
+}
+
+class VariationsItem {
+  int? id;
+  int? productId;
+  String? barcode;
+  String? name;
+  int? stock;
+  int? price;
+  String? created_at;
+  String? updated_at;
+
+  VariationsItem({
+    this.id,
+    required this.barcode,
+    this.created_at,
+    required this.name,
+    required this.price,
+    this.productId,
+    required this.stock,
+    this.updated_at,
+  });
+
+  VariationsItem.fromJson(Map<String, dynamic> variations) {
+    id = variations["id"];
+    productId = variations["product_id"];
+    barcode = variations["barcode"];
+    name = variations["name"];
+    stock = variations["stock"];
+    price = variations["price"];
+    created_at = variations["created_at"];
+    updated_at = variations["updated_at"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> variationsMap = <String, dynamic>{};
+   // variationsMap["id"] = id;
+    variationsMap["barcode"] = barcode;
+    variationsMap["name"] = name;
+  //  variationsMap["product_id"] = productId;
+    variationsMap["stock"] = stock;
+    variationsMap["price"] = price;
+   // variationsMap["updated_at"] = updated_at;
+   // variationsMap["created_at"] = created_at;
+
+    return variationsMap;
   }
 }
